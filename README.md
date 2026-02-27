@@ -1,90 +1,42 @@
 # 🚀 Deployment Dashboard
 
-Welcome to your deployment tracking dashboard! This repository automatically scans all your GitHub repositories every hour and provides a centralized view of all active deployments.
-
-## Features
-
-✨ **Automatic Hourly Updates** - Scans all your repos on a schedule
-📊 **Beautiful Dashboard** - View deployments in markdown and HTML formats
-🔍 **Complete Visibility** - See all active deployments across your projects
-⚡ **Zero Configuration** - Just set up the workflow and it runs automatically
+This repo runs a scheduled GitHub Action that scans repositories you can access, reads deployment + deployment status data, then publishes a dashboard of active deployments.
 
 ## Dashboard Links
 
-- **📋 [Markdown Dashboard](./README.md)** - Simple table format (this file gets auto-updated)
-- **🌐 [Web Dashboard](https://TristanEDU.github.io/deployment-dashboard/)** - Interactive HTML view
+- 📋 **[Markdown Dashboard](./DEPLOYMENTS.md)**
+- 🌐 **[Web Dashboard](./docs/index.html)** (or your GitHub Pages URL)
 
-## How It Works
+## Required Setup (important)
 
-1. A GitHub Actions workflow runs **every hour** (configurable)
-2. The workflow queries all your repositories for active deployments
-3. It generates both a markdown table and an interactive web dashboard
-4. Files are automatically committed and pushed back to this repo
-5. The web dashboard is served via GitHub Pages
+To scan **all your repositories**, configure a fine-grained or classic PAT and save it as:
 
-## Status Indicators
+- `DASHBOARD_GH_TOKEN` (Repository **Settings → Secrets and variables → Actions**)
 
-- ✅ **Success** - Deployment completed successfully
-- ❌ **Failure** - Deployment failed
-- ⚠️ **Error** - An error occurred
-- 🔄 **In Progress** - Deployment is currently running
-- ⏳ **Pending** - Waiting to start
-- 📋 **Queued** - Queued for deployment
-- ❓ **Unknown** - Status not available
+Recommended token permissions/scopes:
+- Repository metadata read
+- Deployments read
+- Contents read/write for this dashboard repo
 
-## Setup Instructions
+> Why this matters: `github.token` is usually scoped to the current repository only, so it often cannot read deployments from your other repos.
 
-The dashboard is already configured! Here's what was set up:
+## How it works
 
-### 1. GitHub Actions Workflow
-- Located in `.github/workflows/update-deployments.yml`
-- Runs automatically every hour at the top of the hour
-- Can be triggered manually via GitHub Actions UI
+1. Workflow `.github/workflows/update-deployments.yml` runs hourly (and manually).
+2. Script `scripts/update_dashboard.py`:
+   - Lists repos visible to the token (`/user/repos` with pagination)
+   - Pulls deployments and latest status for each repo, then keeps only active states (in_progress, queued, pending, waiting)
+   - Writes:
+     - `DEPLOYMENTS.md` (table with repo + deployment links)
+     - `docs/index.html` (card dashboard with direct links)
+     - `deployments_data.json` (raw snapshot)
+3. Workflow commits and pushes updates automatically.
 
-### 2. Dashboard Files
-- `README.md` - Auto-updated markdown table (you're reading it!)
-- `docs/index.html` - Interactive web dashboard
+## Manual run
 
-### 3. GitHub Pages
-- Web dashboard is served from the `docs/` folder
-- Automatically deployed with each update
-- View at: https://TristanEDU.github.io/deployment-dashboard/
-
-## Customization
-
-### Change Update Frequency
-Edit `.github/workflows/update-deployments.yml` and modify the cron schedule:
-```yaml
-schedule:
-  - cron: '0 */4 * * *'  # Every 4 hours
-```
-
-Cron format: `minute hour day month day-of-week`
-
-### Filter Specific Repositories
-Modify the Python script in the workflow to filter repos by name pattern.
-
-## Manual Trigger
-
-Want to update the dashboard immediately? Go to:
-**Actions** → **Update Deployment Dashboard** → **Run workflow**
+- Go to **Actions → Update Deployment Dashboard → Run workflow**.
 
 ## Troubleshooting
 
-### Deployments not showing?
-1. Make sure your repositories have actual deployments
-2. Check that deployments are in the GitHub Deployments API
-3. Run the workflow manually to see any errors
-
-### GitHub Pages not working?
-1. Go to repository **Settings** → **Pages**
-2. Ensure it's set to deploy from `docs/` folder on the `main` branch
-3. Wait a few minutes for GitHub to build the site
-
-## Last Updated
-
-This dashboard was automatically generated. Check back frequently for the latest deployment info!
-
----
-
-**Need help?** Check out the [GitHub Deployments documentation](https://docs.github.com/en/rest/deployments)
+- If dashboard is empty, verify `DASHBOARD_GH_TOKEN` is present and has repo/deployment visibility.
+- Check workflow logs for API errors or permission issues.
