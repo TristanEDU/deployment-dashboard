@@ -1,6 +1,6 @@
 # 🚀 Deployment Dashboard
 
-This repo runs a scheduled GitHub Action that scans repositories you can access, reads deployment + deployment status data, then publishes a dashboard of active deployments.
+This repo runs a scheduled GitHub Action that scans repositories you can access, reads deployment + deployment status data, and publishes a markdown + web dashboard.
 
 ## Dashboard Links
 
@@ -25,7 +25,7 @@ Recommended token permissions/scopes:
 1. Workflow `.github/workflows/update-deployments.yml` runs hourly (and manually).
 2. Script `scripts/update_dashboard.py`:
    - Lists repos visible to the token (`/user/repos` with pagination)
-   - Pulls deployments and latest status for each repo, then keeps only active states (in_progress, queued, pending, waiting)
+   - Pulls deployments and latest status for each repo
    - Writes:
      - `DEPLOYMENTS.md` (table with repo + deployment links)
      - `docs/index.html` (card dashboard with direct links)
