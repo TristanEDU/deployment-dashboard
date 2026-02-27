@@ -1,1 +1,125 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Deployment Dashboard</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 20px;\n            background-color: #f4f4f4;\n        }\n        h1 {\n            text-align: center;\n            color: #333;\n        }\n        .dashboard {\n            display: flex;\n            flex-wrap: wrap;\n            justify-content: space-around;\n        }\n        .card {\n            background: white;\n            border-radius: 5px;\n            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n            margin: 10px;\n            padding: 20px;\n            width: 250px;\n            text-align: center;\n        }\n        .status {\n            font-weight: bold;\n        }\n    </style>\n</head>\n<body>\n    <h1>Deployment Dashboard</h1>\n    <div class="dashboard">\n        <div class="card">\n            <h2>Repo Name: deployment-dashboard</h2>\n            <p>Environment: Production</p>\n            <p class="status">Status: In Progress</p>\n            <p>Branch: main</p>\n            <p>Commit: abc123def</p>\n            <p>Created At: 2026-02-27 16:43:52 UTC</p>\n        </div>\n        <div class="card">\n            <h2>Repo Name: deployment-dashboard</h2>\n            <p>Environment: Staging</p>\n            <p class="status">Status: Success</p>\n            <p>Branch: feature-x</p>\n            <p>Commit: xyz789ghi</p>\n            <p>Created At: 2026-02-27 15:30:00 UTC</p>\n        </div>\n    </div>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deployment Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #5b667d;
+      --border: #dbe2ef;
+      --shadow: 0 10px 25px rgba(23, 32, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem 1rem 3rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+    }
+
+    .subhead {
+      color: var(--muted);
+      margin: 0.6rem 0 1.8rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      margin: 0 0 0.8rem;
+    }
+
+    .meta {
+      margin: 0.5rem 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.86rem;
+    }
+
+    .status.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status.in-progress {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>🚀 Deployment Dashboard</h1>
+    <p class="subhead">A snapshot of active deployments across your repositories.</p>
+
+    <section class="grid" aria-label="Deployment list">
+      <article class="card">
+        <h2>deployment-dashboard</h2>
+        <span class="status in-progress">🔄 In Progress</span>
+        <p class="meta"><strong>Environment:</strong> Production</p>
+        <p class="meta"><strong>Branch:</strong> main</p>
+        <p class="meta"><strong>Commit:</strong> abc123def</p>
+        <p class="meta"><strong>Created:</strong> 2026-02-27 16:43:52 UTC</p>
+      </article>
+
+      <article class="card">
+        <h2>deployment-dashboard</h2>
+        <span class="status success">✅ Success</span>
+        <p class="meta"><strong>Environment:</strong> Staging</p>
+        <p class="meta"><strong>Branch:</strong> feature-x</p>
+        <p class="meta"><strong>Commit:</strong> xyz789ghi</p>
+        <p class="meta"><strong>Created:</strong> 2026-02-27 15:30:00 UTC</p>
+      </article>
+    </section>
+
+    <p class="footer">Last refreshed: 2026-02-27 16:45:00 UTC</p>
+  </main>
+</body>
+</html>
