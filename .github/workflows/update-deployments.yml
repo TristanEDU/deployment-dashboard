@@ -2,182 +2,36 @@ name: Update Deployment Dashboard
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs every hour at the top of the hour
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
-  deployments: read
 
 jobs:
-  update-deployments:
+  update-dashboard:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
-      - name: Fetch all deployments
-        id: fetch-deployments
+
+
+      - name: Generate deployment dashboard
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python3 << 'EOF'
-          import os
-          import json
-          import requests
-          from datetime import datetime
-          
-          GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
-          GITHUB_API = 'https://api.github.com'
-          headers = {
-              'Authorization': f'token {GITHUB_TOKEN}',
-              'Accept': 'application/vnd.github.v3+json'
-          }
-          
-          # Get current user
-          user_resp = requests.get(f'{GITHUB_API}/user', headers=headers)
-          user_data = user_resp.json()
-          username = user_data['login']
-          
-          # Get all repositories owned by the user
-          repos_resp = requests.get(
-              f'{GITHUB_API}/user/repos',
-              headers=headers,
-              params={'type': 'owner', 'per_page': 100}
-          )
-          repos = repos_resp.json()
-          
-          deployments_data = []
-          
-          for repo in repos:
-              repo_name = repo['name']
-              repo_full = repo['full_name']
-              
-              # Get deployments for this repo
-              deployments_resp = requests.get(
-                  f'{GITHUB_API}/repos/{repo_full}/deployments',
-                  headers=headers,
-                  params={'per_page': 100}
-              )
-              
-              if deployments_resp.status_code == 200:
-                  deployments = deployments_resp.json()
-                  
-                  for deployment in deployments:
-                      # Get deployment status
-                      statuses_resp = requests.get(
-                          f'{GITHUB_API}/repos/{repo_full}/deployments/{deployment["id"]}/statuses',
-                          headers=headers
-                      )
-                      
-                      if statuses_resp.status_code == 200:
-                          statuses = statuses_resp.json()
-                          latest_status = statuses[0] if statuses else None
-                          
-                          deployments_data.append({
-                              'repo': repo_name,
-                              'full_repo': repo_full,
-                              'environment': deployment.get('environment', 'N/A'),
-                              'ref': deployment.get('ref', 'N/A'),
-                              'sha': deployment.get('sha', 'N/A')[:7],
-                              'created_at': deployment.get('created_at', 'N/A'),
-                              'status': latest_status.get('state', 'unknown') if latest_status else 'unknown',
-                              'status_url': latest_status.get('target_url', '#') if latest_status else '#',
-                              'description': latest_status.get('description', '') if latest_status else ''
-                          })
-          
-          # Save data to file
-          with open('deployments_data.json', 'w') as f:
-              json.dump(deployments_data, f, indent=2)
-          
-          print(f"Found {len(deployments_data)} active deployments")
-          
-          EOF
-      
-      - name: Generate markdown dashboard
-        run: |
-          python3 << 'EOF'
-          import json
-          from datetime import datetime
-          
-          with open('deployments_data.json', 'r') as f:
-              deployments = json.load(f)
-          
-          # Sort by repo name
-          deployments.sort(key=lambda x: x['repo'])
-          
-          # Status emoji mapping
-          status_emoji = {
-              'success': '✅',
-              'failure': '❌',
-              'error': '⚠️',
-              'pending': '⏳',
-              'in_progress': '🔄',
-              'queued': '📋',
-              'unknown': '❓'
-          }
-          
-          markdown = f"""# 🚀 Deployment Dashboard
+          DASHBOARD_GH_TOKEN: ${{ secrets.DASHBOARD_GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/update_dashboard.py
 
-Last updated: **{datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}**
-
-## Active Deployments
-
-"""
-          
-          if not deployments:
-              markdown += "_No active deployments found._\n"
-          else:
-              markdown += "| Repository | Environment | Status | Ref | Commit | Created |\\n"
-              markdown += "|---|---|---|---|---|---|\\n"
-              
-              for dep in deployments:
-                  status_symbol = status_emoji.get(dep['status'], '❓')
-                  created = datetime.fromisoformat(dep['created_at'].replace('Z', '+00:00')).strftime('%Y-%m-%d %H:%M')
-                  
-                  markdown += f"| [{dep['repo']}](https://github.com/{dep['full_repo']}) | {dep['environment']} | {status_symbol} {dep['status']} | {dep['ref']} | `{dep['sha']}` | {created} |\\n"
-          
-          markdown += f"""
----
-
-## Dashboard Info
-
-- **Total Active Deployments**: {len(deployments)}
-- **Last Scan**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}
-- **Scan Frequency**: Hourly
-
-## How to Use
-
-This dashboard automatically scans all your repositories every hour and displays active deployments. 
-
-- ✅ = Success
-- ❌ = Failure
-- ⚠️ = Error
-- 🔄 = In Progress
-- ⏳ = Pending
-- 📋 = Queued
-- ❓ = Unknown Status
-
-[View Web Dashboard](https://TristanEDU.github.io/deployment-dashboard/)
-"""
-          
-          with open('DEPLOYMENTS.md', 'w') as f:
-              f.write(markdown)
-          
-          print("DEPLOYMENTS.md generated successfully")
-          
-          EOF
-      
-      - name: Commit changes
+      - name: Commit dashboard updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add DEPLOYMENTS.md deployments_data.json
+          git add DEPLOYMENTS.md docs/index.html deployments_data.json
           git commit -m "chore: update deployment dashboard" || echo "No changes to commit"
           git push
