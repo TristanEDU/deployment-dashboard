@@ -105,8 +105,30 @@
     "ref": "main",
     "sha": "7afe470",
     "created_at": "2026-02-27T18:06:21Z",
-    "status": "success",
+    "status": "inactive",
     "dashboard_url": "https://github.com/TristanEDU/deployment-dashboard/actions/runs/22497944545/job/65177314575",
+    "status_description": ""
+  },
+  {
+    "repo": "deployment-dashboard",
+    "full_repo": "TristanEDU/deployment-dashboard",
+    "environment": "github-pages",
+    "ref": "main",
+    "sha": "1a10cf2",
+    "created_at": "2026-02-27T18:13:36Z",
+    "status": "inactive",
+    "dashboard_url": "https://github.com/TristanEDU/deployment-dashboard/actions/runs/22498192213/job/65178166293",
+    "status_description": ""
+  },
+  {
+    "repo": "deployment-dashboard",
+    "full_repo": "TristanEDU/deployment-dashboard",
+    "environment": "github-pages",
+    "ref": "main",
+    "sha": "5d64d91",
+    "created_at": "2026-02-27T18:16:29Z",
+    "status": "success",
+    "dashboard_url": "https://github.com/TristanEDU/deployment-dashboard/actions/runs/22498294583/job/65178507373",
     "status_description": ""
   },
   {
