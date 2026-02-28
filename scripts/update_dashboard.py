@@ -223,12 +223,12 @@ def render_html(rows: List[DeploymentRow], generated_at: str) -> str:
             """.strip()
         )
 
-    cards_html = "\n".join(cards) if cards else "<p>No deployments found for repositories visible to this token.</p>"
+    cards_html = "\n".join(cards) if cards else '<p class="empty">No deployments found for repositories visible to this token.</p>'
     return f"""<!DOCTYPE html>
-<html lang=\"en\">
+<html lang="en">
 <head>
-  <meta charset=\"UTF-8\" />
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Deployment Dashboard</title>
   <style>
     :root {{
@@ -244,7 +244,6 @@ def render_html(rows: List[DeploymentRow], generated_at: str) -> str:
     }}
     * {{ box-sizing: border-box; }}
     body {{
-      font-family: Inter, Segoe UI, Arial, sans-serif;
       margin: 0;
       padding: 28px 20px 40px;
       background: radial-gradient(circle at top, #101e42, var(--bg) 45%);
