@@ -207,16 +207,18 @@ def render_html(rows: List[DeploymentRow], generated_at: str) -> str:
         action_text = source_label.get(row.source_url, "Open link")
         cards.append(
             f"""
-      <article class="card">
-        <h2 class="repo"><a href="https://github.com/{html.escape(row.full_repo)}" target="_blank" rel="noreferrer">{html.escape(row.full_repo)}</a></h2>
-        <p class="status-line"><span class="status {html.escape(status_class)}">{emoji} {html.escape(row.status)}</span></p>
-        <dl class="meta">
+      <article class=\"card\">
+        <header class=\"card-header\">
+          <h2><a href=\"https://github.com/{html.escape(row.full_repo)}\" target=\"_blank\" rel=\"noreferrer\">{html.escape(row.full_repo)}</a></h2>
+          <span class=\"status {html.escape(status_class)}\">{emoji} {html.escape(row.status)}</span>
+        </header>
+        <dl class=\"meta\">
           <div><dt>Environment</dt><dd>{html.escape(row.environment)}</dd></div>
-          <div><dt>Branch/Ref</dt><dd class="break">{html.escape(row.ref)}</dd></div>
+          <div><dt>Branch/Ref</dt><dd class=\"break\">{html.escape(row.ref)}</dd></div>
           <div><dt>Commit</dt><dd><code>{html.escape(row.sha or 'N/A')}</code></dd></div>
           <div><dt>Created</dt><dd>{html.escape(fmt_time(row.created_at))}</dd></div>
         </dl>
-        <p class="card-action"><a href="{html.escape(row.dashboard_url)}" target="_blank" rel="noreferrer">{action_text}</a></p>
+        <p class=\"card-action\"><a href=\"{html.escape(row.dashboard_url)}\" target=\"_blank\" rel=\"noreferrer\">{action_text}</a></p>
       </article>
             """.strip()
         )
@@ -231,128 +233,83 @@ def render_html(rows: List[DeploymentRow], generated_at: str) -> str:
   <style>
     :root {{
       color-scheme: dark;
-      --bg: #030814;
-      --panel: #0d1b42;
-      --panel-soft: #122556;
-      --text: #e6efff;
-      --muted: #9cb2df;
-      --border: #274488;
+      --bg: #060913;
+      --panel: #0d1327;
+      --text: #dbe7ff;
+      --muted: #9db0d9;
+      --border: #24376d;
       --accent: #6ee7ff;
-      --shadow: rgba(1, 8, 24, 0.4);
+      --panel-soft: rgba(20, 32, 68, 0.72);
+      --shadow: rgba(8, 12, 28, 0.45);
     }}
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
-      font-family: Inter, Segoe UI, Arial, sans-serif;
+      padding: 28px 20px 40px;
+      background: radial-gradient(circle at top, #101e42, var(--bg) 45%);
       color: var(--text);
-      background: radial-gradient(circle at top, #0a1a45 0%, var(--bg) 42%);
       line-height: 1.45;
     }}
-    main {{
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }}
+    main {{ max-width: 1180px; margin: 0 auto; }}
     .page-header {{
+      margin-bottom: 18px;
+      padding: 16px 18px;
       border: 1px solid var(--border);
       border-radius: 16px;
-      background: linear-gradient(110deg, rgba(17, 38, 92, 0.95), rgba(7, 15, 40, 0.95));
-      box-shadow: 0 12px 30px var(--shadow);
-      padding: 16px 18px;
-      margin-bottom: 14px;
+      background: linear-gradient(165deg, var(--panel-soft), rgba(10, 16, 35, 0.82));
+      box-shadow: 0 10px 30px var(--shadow);
     }}
     h1 {{
       margin: 0;
-      font-size: clamp(1.25rem, 2vw, 2rem);
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: clamp(1.2rem, 2vw, 1.8rem);
     }}
     .updated {{ margin: 6px 0 0; color: var(--muted); }}
-    .grid {{
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 12px;
-      align-items: stretch;
-    }}
+    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }}
     .card {{
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-width: 0;
+      background: linear-gradient(158deg, rgba(19, 31, 66, 0.92), rgba(9, 15, 32, 0.95));
       border: 1px solid var(--border);
       border-radius: 14px;
-      background: linear-gradient(150deg, rgba(15, 31, 76, 0.94), rgba(5, 14, 35, 0.96));
-      box-shadow: 0 10px 20px var(--shadow);
-      padding: 12px 14px 14px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 22px var(--shadow);
     }}
-    .repo {{
-      margin: 0;
-      min-width: 0;
-      font-size: 1rem;
-      line-height: 1.3;
-      overflow-wrap: anywhere;
-    }}
-    .repo a {{ color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; }}
-    .status-line {{ margin: 0; }}
-    .status {{
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      font-size: 0.92rem;
-      font-weight: 700;
-      text-transform: capitalize;
-      white-space: nowrap;
-      max-width: 100%;
-    }}
-    .meta {{
-      margin: 0;
-      display: grid;
-      gap: 8px;
-      padding-top: 2px;
-    }}
+    .card-header {{ display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }}
+    .card h2 {{ margin: 0; font-size: 0.98rem; }}
+    .card a {{ color: var(--accent); }}
+    .meta {{ margin: 0; display: grid; gap: 9px; }}
     .meta div {{
       display: grid;
-      grid-template-columns: 102px minmax(0, 1fr);
-      align-items: start;
+      grid-template-columns: 105px 1fr;
       gap: 8px;
+      align-items: baseline;
     }}
-    .meta dt {{
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }}
-    .meta dd {{ margin: 0; font-weight: 600; min-width: 0; }}
+    .meta dt {{ color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; }}
+    .meta dd {{ margin: 0; font-weight: 500; }}
     .meta .break {{ overflow-wrap: anywhere; }}
-    .meta code {{ font-size: 0.95em; }}
-    .card-action {{ margin: 2px 0 0; }}
-    .card-action a {{ color: var(--accent); font-weight: 700; }}
-    .empty {{ color: var(--muted); }}
-    .status.success {{ background: rgba(18, 126, 63, 0.34); border-color: #22c55e; color: #bbf7d0; }}
-    .status.failure, .status.error {{ background: rgba(149, 32, 49, 0.36); border-color: #f87171; color: #fecaca; }}
-    .status.in-progress {{ background: rgba(29, 78, 216, 0.4); border-color: #60a5fa; color: #bfdbfe; }}
-    .status.pending, .status.queued {{ background: rgba(133, 77, 14, 0.38); border-color: #facc15; color: #fef08a; }}
-    .status.unknown, .status.inactive {{ background: rgba(71, 85, 105, 0.45); border-color: #94a3b8; color: #cbd5e1; }}
-
-    @media (max-width: 720px) {{
-      main {{ padding: 14px 10px 24px; }}
-      .page-header {{ padding: 14px; border-radius: 14px; }}
+    .card-action {{ margin: 14px 0 0; }}
+    .card-action a {{ font-weight: 600; }}
+    .status {{ display: inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 600; margin-bottom: 10px; border: 1px solid transparent; }}
+    .status.success {{ background: rgba(22, 101, 52, 0.32); border-color: #22c55e; color: #a7f3d0; }}
+    .status.failure, .status.error {{ background: rgba(153, 27, 27, 0.32); border-color: #f87171; color: #fecaca; }}
+    .status.in-progress {{ background: rgba(29, 78, 216, 0.35); border-color: #60a5fa; color: #bfdbfe; }}
+    .status.pending, .status.queued {{ background: rgba(133, 77, 14, 0.35); border-color: #facc15; color: #fef08a; }}
+    .status.unknown, .status.inactive {{ background: rgba(71, 85, 105, 0.42); border-color: #94a3b8; color: #cbd5e1; }}
+    @media (max-width: 640px) {{
+      body {{ padding: 16px 12px 28px; }}
+      .card-header {{ flex-direction: column; align-items: flex-start; }}
       .meta div {{ grid-template-columns: 1fr; gap: 2px; }}
-      .repo {{ font-size: 0.98rem; }}
+      .status {{ margin-bottom: 0; }}
     }}
   </style>
 </head>
 <body>
   <main>
-    <header class="page-header">
+    <header class=\"page-header\">
       <h1>🚀 Deployment Dashboard</h1>
-      <p class="updated">Last updated: <strong>{generated_at}</strong></p>
+      <p class=\"updated\">Last updated: <strong>{generated_at}</strong></p>
     </header>
-    <div class="grid">{cards_html}</div>
+    <div class=\"grid\">{cards_html}</div>
   </main>
 </body>
 </html>
