@@ -76,8 +76,8 @@
     "full_repo": "TristanEDU/deployment-dashboard",
     "environment": "github-pages",
     "ref": "main",
-    "sha": "2c0600c",
-    "created_at": "2026-05-20T16:44:13Z",
+    "sha": "97aff32",
+    "created_at": "2026-05-20T18:00:56Z",
     "status": "success",
     "dashboard_url": "https://tristanedu.github.io/deployment-dashboard/",
     "source_url": "deployment",
@@ -176,6 +176,18 @@
     "created_at": "2025-11-23T23:47:28Z",
     "status": "success",
     "dashboard_url": "https://studybuddies-financial-modeler-7dy4kpmmd-tristanedus-projects.vercel.app",
+    "source_url": "deployment",
+    "status_description": "Deployment has completed"
+  },
+  {
+    "repo": "tiny-emergencies-remotion",
+    "full_repo": "TristanEDU/tiny-emergencies-remotion",
+    "environment": "Production",
+    "ref": "b6c01761533c6c48e8ed3da06b86bd96994e59eb",
+    "sha": "b6c0176",
+    "created_at": "2026-05-20T19:04:50Z",
+    "status": "success",
+    "dashboard_url": "https://tiny-emergencies-remotion-keozf2zzk-tristanedus-projects.vercel.app",
     "source_url": "deployment",
     "status_description": "Deployment has completed"
   }
